@@ -21,7 +21,7 @@
             </div>
         </div>
     </nav>
-     <main class="main-content">
+    <main class="main-content">
         <div class="tab-section">
             <div class="tabs">
                 <button class="tab-btn active" id="tabAll" onclick="handleTab('all')">All</button>
@@ -47,6 +47,22 @@
                 </span>
             </div>
         </div>
+
+        <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading issues...</p>
+        </div>
+
+        <div id="issuesGrid" class="issues-grid"></div>
+    </main>
+    <div id="modalOverlay" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModalBtn()">&times;</button>
+            <div id="modalBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 
 </html>
