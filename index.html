@@ -21,6 +21,32 @@
             </div>
         </div>
     </nav>
+     <main class="main-content">
+        <div class="tab-section">
+            <div class="tabs">
+                <button class="tab-btn active" id="tabAll" onclick="handleTab('all')">All</button>
+                <button class="tab-btn" id="tabOpen" onclick="handleTab('open')">Open</button>
+                <button class="tab-btn" id="tabClosed" onclick="handleTab('closed')">Closed</button>
+            </div>
+        </div>
+
+        <div class="info-bar">
+            <div class="info-left">
+                <img src="assets/Aperture.png" alt="Aperture" class="info-icon">
+                <div class="info-text">
+                    <span id="issueCount" class="info-count">50 Issues</span>
+                    <span class="info-subtitle">Track and manage your project issues</span>
+                </div>
+            </div>
+            <div class="info-right">
+                <span class="status-legend open-legend">
+                    <span class="legend-dot open-dot"></span> Open
+                </span>
+                <span class="status-legend closed-legend">
+                    <span class="legend-dot closed-dot"></span> Closed
+                </span>
+            </div>
+        </div>
 </body>
 
 </html>
