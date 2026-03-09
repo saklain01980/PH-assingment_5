@@ -52,7 +52,7 @@ function loadAllIssues() {
         .then(function (result) {
             allIssues = result.data;
             hideLoading();
-            displayIssues(allIssues);
+            filterAndDisplay();
         })
         .catch(function (error) {
             console.error('Error fetching issues:', error);
@@ -89,6 +89,9 @@ function getLabelClass(label) {
 function createIssueCard(issue) {
     var card = document.createElement('div');
     card.className = 'issue-card ' + issue.status;
+    card.onclick = function () {
+        openModal(issue.id);
+    };
 
     var date = new Date(issue.createdAt);
     var month = date.getMonth() + 1;
@@ -97,6 +100,7 @@ function createIssueCard(issue) {
     var formattedDate = month + '/' + day + '/' + year;
 
     var statusIcon = issue.status === 'open' ? 'assets/Open-Status.png' : 'assets/Closed- Status .png';
+
 
     var priorityClass = issue.priority.toLowerCase();
 
@@ -131,6 +135,78 @@ function toTitleCase(str) {
         return char.toUpperCase();
     });
 }
+function openModal(issueId) {
+    modalOverlay.classList.add('show');
+    modalBody.innerHTML = '<div class="loading-spinner show" style="display:flex;"><div class="spinner"></div><p>Loading details...</p></div>';
+
+    fetch(SINGLE_ISSUE_URL + issueId)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (result) {
+            var issue = result.data;
+
+            var date = new Date(issue.createdAt);
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            var formattedDate = (day < 10 ? '0' + day : day) + '/' + (month < 10 ? '0' + month : month) + '/' + year;
+            var statusText = issue.status === 'open' ? 'Opened' : 'Closed';
+            var statusClass = issue.status;
+
+            var labelsHTML = '';
+            if (issue.labels && issue.labels.length > 0) {
+                labelsHTML = '<div class="modal-labels">';
+                for (var j = 0; j < issue.labels.length; j++) {
+                    var labelClass = getLabelClass(issue.labels[j]);
+                    labelsHTML += '<span class="modal-label-tag ' + labelClass + '"><span class="modal-label-icon"></span> ' + issue.labels[j].toUpperCase() + '</span>';
+                }
+                labelsHTML += '</div>';
+            }
+
+            var priorityClass = issue.priority.toLowerCase();
+
+            modalBody.innerHTML =
+                '<h2>' + issue.title + '</h2>' +
+                '<div class="modal-status-row">' +
+                '<span class="modal-status-badge ' + statusClass + '">' + statusText + '</span>' +
+                '<span class="modal-status-dot">•</span>' +
+                '<span>' + statusText + ' by ' + issue.author + '</span>' +
+                '<span class="modal-status-dot">•</span>' +
+                '<span>' + formattedDate + '</span>' +
+                '</div>' +
+                labelsHTML +
+                '<p class="modal-description">' + issue.description + '</p>' +
+                '<div class="modal-info-box">' +
+                '<div class="modal-info-item">' +
+                '<span class="info-label">Assignee:</span>' +
+                '<span class="info-value">' + (issue.assignee || 'Unassigned') + '</span>' +
+                '</div>' +
+                '<div class="modal-info-item">' +
+                '<span class="info-label">Priority:</span>' +
+                '<span class="card-priority-badge ' + priorityClass + '">' + issue.priority.toUpperCase() + '</span>' +
+                '</div>' +
+                '</div>' +
+                '<div class="modal-close-btn">' +
+                '<button onclick="closeModalBtn()">Close</button>' +
+                '</div>';
+        })
+        .catch(function (error) {
+            console.error('Error fetching issue details:', error);
+            modalBody.innerHTML = '<p style="color: #dc2626;">Failed to load issue details.</p>';
+        });
+}
+
+function closeModal(event) {
+    if (event.target === modalOverlay) {
+        modalOverlay.classList.remove('show');
+    }
+}
+
+function closeModalBtn() {
+    modalOverlay.classList.remove('show');
+}
+
 
 function showLoading() {
     loadingSpinner.classList.add('show');
