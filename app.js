@@ -61,6 +61,54 @@ function loadAllIssues() {
         });
 }
 
+function searchIssues(query) {
+    showLoading();
+    fetch(SEARCH_URL + encodeURIComponent(query))
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (result) {
+            hideLoading();
+            displayIssues(result.data);
+        })
+        .catch(function (error) {
+            console.error('Error searching issues:', error);
+            hideLoading();
+        });
+}
+
+function handleTab(tab) {
+    currentTab = tab;
+
+    document.getElementById('tabAll').classList.remove('active');
+    document.getElementById('tabOpen').classList.remove('active');
+    document.getElementById('tabClosed').classList.remove('active');
+
+    if (tab === 'all') {
+        document.getElementById('tabAll').classList.add('active');
+    } else if (tab === 'open') {
+        document.getElementById('tabOpen').classList.add('active');
+    } else {
+        document.getElementById('tabClosed').classList.add('active');
+    }
+
+    filterAndDisplay();
+}
+
+function filterAndDisplay() {
+    var filtered = [];
+    if (currentTab === 'all') {
+        filtered = allIssues;
+    } else {
+        for (var i = 0; i < allIssues.length; i++) {
+            if (allIssues[i].status === currentTab) {
+                filtered.push(allIssues[i]);
+            }
+        }
+    }
+    displayIssues(filtered);
+}
+
 function displayIssues(issues) {
     issuesGrid.innerHTML = '';
     issueCount.textContent = issues.length + ' Issues';
