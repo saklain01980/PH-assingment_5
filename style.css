@@ -358,3 +358,18 @@ body {
     background-color: #f3e8ff;
     color: #7c3aed;
 }
+.card-footer {
+    border-top: 1px solid #f3f4f6;
+    padding-top: 12px;
+}
+
+.card-footer .card-id-author {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 2px;
+}
+
+.card-footer .card-date {
+    font-size: 12px;
+    color: #9ca3af;
+}

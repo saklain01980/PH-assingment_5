@@ -2,18 +2,47 @@
 if (localStorage.getItem('isLoggedIn') !== 'true') {
     window.location.href = 'login.html';
 }
-
 var BASE_URL = 'https://phi-lab-server.vercel.app/api/v1/lab';
 var ALL_ISSUES_URL = BASE_URL + '/issues';
-
+var SINGLE_ISSUE_URL = BASE_URL + '/issue/';
+var SEARCH_URL = BASE_URL + '/issues/search?q=';
 var allIssues = [];
-
+var currentTab = 'all';
 var issuesGrid = document.getElementById('issuesGrid');
 var loadingSpinner = document.getElementById('loadingSpinner');
 var issueCount = document.getElementById('issueCount');
+var modalOverlay = document.getElementById('modalOverlay');
+var modalBody = document.getElementById('modalBody');
+var searchInput = document.getElementById('searchInput');
+var searchBtn = document.getElementById('searchBtn');
 
 loadAllIssues();
 
+searchBtn.addEventListener('click', function () {
+    var query = searchInput.value.trim();
+    if (query !== '') {
+        searchIssues(query);
+    } else {
+        filterAndDisplay();
+    }
+});
+
+searchInput.addEventListener('keyup', function (e) {
+    if (e.key === 'Enter') {
+        var query = searchInput.value.trim();
+        if (query !== '') {
+            searchIssues(query);
+        } else {
+            filterAndDisplay();
+        }
+    }
+});
+searchInput.addEventListener('input', function () {
+    var query = searchInput.value.trim();
+    if (query === '') {
+        filterAndDisplay();
+    }
+});
 function loadAllIssues() {
     showLoading();
     fetch(ALL_ISSUES_URL)
